@@ -10,14 +10,10 @@ namespace SupportBank {
         static void Main(string[] args)
         {   string filepath = "./Transactions2014.csv";
             var transactions = ReadCsvFile(filepath);
-            // foreach (var transaction in transactions)
-            // {
-            //     Console.WriteLine($"{transaction.Date}, {transaction.From}, {transaction.To}, {transaction.Narrative}, {transaction.Amount}");
-            // }
             Bank myBank = new Bank();
             myBank.BankAddTransaction(transactions);
-            myBank.ListAllAccounts();
-      
+            // myBank.ListAllAccounts();
+            myBank.ListAccount();
         }
     
         public static List<Transactions> ReadCsvFile(string filePath)
@@ -39,9 +35,6 @@ namespace SupportBank {
         public string Narrative { get; set; } = string.Empty;
         public string Amount { get; set; } = string.Empty;       
     }
-
-//Edit your program so that it creates an account for each person, and then keeps track of how much each person owes / is owed.
-//Print out the names of each person, along with the total amount they owe, or are owed.//
 
     public class PersonAccounts 
     {
@@ -66,7 +59,6 @@ namespace SupportBank {
             {
                 foreach (var transaction in transactions)
             {
-            // Create accounts if they don't exist
                 if (!UserAccounts.ContainsKey(transaction.From))
                 {
                     UserAccounts[transaction.From] = new PersonAccounts { Name = transaction.From };
@@ -76,7 +68,6 @@ namespace SupportBank {
                     UserAccounts[transaction.To] = new PersonAccounts { Name = transaction.To };
                 }  
 
-            // Update balances
             UserAccounts[transaction.From].Balance -= StringConverters.SafeParseInt(transaction.Amount);
             UserAccounts[transaction.To].Balance += StringConverters.SafeParseInt(transaction.Amount);
             UserAccounts[transaction.From].AddTransaction(transaction);
@@ -88,9 +79,36 @@ namespace SupportBank {
         {
             foreach (var account in UserAccounts.Values)
             {
-                Console.WriteLine($"{account.Name}: {account.Balance:C}"); // "C" for currency format
+                Console.WriteLine($"{account.Name}: {account.Balance:C}"); 
             }
         }  
+
+
+    public void ListAccount()
+        {       
+            Console.WriteLine("Please enter name of account:");
+            string? userinput = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(userinput))
+            {
+            throw new ArgumentException("Account name cannot be empty.");
+            }
+
+            if(UserAccounts.ContainsKey(userinput)){
+                PersonAccounts person = UserAccounts[userinput];
+                List<Transactions> UserTransactions = person.transactions;
+
+            foreach (var transaction in UserTransactions)
+            {
+                Console.WriteLine($"{transaction.Date}, {transaction.From}, {transaction.To}, {transaction.Narrative}, {transaction.Amount}");   
+            }
+            }
+            else
+            {
+                Console.WriteLine($"No account found for {userinput}.");
+            }
+        }   
+
+        
     }
 
     public static class StringConverters{

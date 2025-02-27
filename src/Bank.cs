@@ -1,9 +1,3 @@
-using System;
-using System.Globalization;
-using System.IO;
-using System.Transactions;
-using CsvHelper;
-using CsvHelper.Configuration;
 
 namespace SupportBank {
      public class Bank
@@ -22,11 +16,8 @@ namespace SupportBank {
                 {
                     UserAccounts[transaction.To] = new PersonAccount (transaction.To)  ;
                 }  
-
-            UserAccounts[transaction.From].Balance -= transaction.Amount;
-            UserAccounts[transaction.To].Balance += transaction.Amount;
-            UserAccounts[transaction.From].AddTransaction(transaction);
-            UserAccounts[transaction.To].AddTransaction(transaction);
+                UserAccounts[transaction.From].AddTransaction(transaction);
+                UserAccounts[transaction.To].AddTransaction(transaction);
             }
         }
 
@@ -34,7 +25,7 @@ namespace SupportBank {
     {
         foreach (var account in UserAccounts.Values)
         {
-            Console.WriteLine($"{account.Name}: {account.Balance:C}"); 
+            Console.WriteLine($"{account.Name}: {ConvertBalance.SafeConvertBalance(account.Balance)}"); 
         }
     }  
 
@@ -44,17 +35,18 @@ namespace SupportBank {
         string? userinput = Console.ReadLine();
         if (string.IsNullOrWhiteSpace(userinput))
         {
-        throw new ArgumentException("Account name cannot be empty.");
+            throw new ArgumentException("Account name cannot be empty.");
         }
 
-        if(UserAccounts.ContainsKey(userinput)){
+        if(UserAccounts.ContainsKey(userinput))
+        {
             PersonAccount person = UserAccounts[userinput];
             List<Transaction> UserTransactions = person.Transactions;
 
-        foreach (var transaction in UserTransactions)
-        {
-            Console.WriteLine($"{transaction.Date}, {transaction.From}, {transaction.To}, {transaction.Narrative}, {transaction.Amount}");   
-        }
+            foreach (var transaction in UserTransactions)
+            {
+                Console.WriteLine($"{transaction.Date}, {transaction.From}, {transaction.To}, {transaction.Narrative}, {ConvertBalance.SafeConvertBalance(transaction.Amount)}");   
+            }
         }
         else
         {

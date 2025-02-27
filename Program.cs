@@ -12,7 +12,7 @@ namespace SupportBank {
             var transactions = ReadCsvFile(filepath);
             Bank myBank = new Bank();
             myBank.BankAddTransaction(transactions);
-            // myBank.ListAllAccounts();
+            myBank.ListAllAccounts();
             myBank.ListAccount();
         }
     

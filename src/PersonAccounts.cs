@@ -1,23 +1,33 @@
-using System;
-using System.Globalization;
-using System.IO;
-using System.Transactions;
-using CsvHelper;
-using CsvHelper.Configuration;
 
 namespace SupportBank {
-    public class PersonAccount (string name, int initialBalance = 0)
+    public class PersonAccount 
     {
-        public string Name { get; set; }  = name;
-        public int Balance { get; set; }  = initialBalance;    
-        public List<Transaction> Transactions {get; }= new List<Transaction>();
+        public PersonAccount(string name, int initialBalance) {
+            this.Name = name;
+            this.Balance = initialBalance;
+            this.Transactions = new List<Transaction>();
+        }
+
+        public PersonAccount(string name) {
+            this.Name = name;
+            this.Balance = 0;
+            this.Transactions = new List<Transaction>();
+        }
+        public string Name { get; set; } 
+        public int Balance { get; set; }    
+        public List<Transaction> Transactions {get; }
         
         public void AddTransaction(Transaction transaction)
-        {
+        { 
             Transactions.Add(transaction);
+            if(transaction.From == Name){
+                Balance -= transaction.Amount;
+            } else if(transaction.To == Name){
+                Balance += transaction.Amount;
+            }
         }
-        public int getBalance(){
-            return Balance;
+        public string getBalance(){
+            return ConvertBalance.SafeConvertBalance(Balance);
         }
     }
 }

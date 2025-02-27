@@ -14,7 +14,7 @@ namespace SupportBank {
             this.Transactions = new List<Transaction>();
         }
         public string Name { get; set; } 
-        public int Balance { get; set; }    
+        public int Balance { get; private set; }    
         public List<Transaction> Transactions {get; }
         
         public void AddTransaction(Transaction transaction)

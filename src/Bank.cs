@@ -45,7 +45,7 @@ namespace SupportBank {
 
             foreach (var transaction in UserTransactions)
             {
-                Console.WriteLine($"{transaction.Date}, {transaction.From}, {transaction.To}, {transaction.Narrative}, {ConvertBalance.SafeConvertBalance(transaction.Amount)}");   
+                Console.WriteLine(transaction.ToString());
             }
         }
         else

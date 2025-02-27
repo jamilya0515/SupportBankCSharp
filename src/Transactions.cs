@@ -1,4 +1,6 @@
 
+using System.Runtime;
+
 namespace SupportBank {
     public class Transaction
     {
@@ -14,5 +16,12 @@ namespace SupportBank {
         public string To { get; } 
         public string Narrative { get; } 
         public int Amount { get; }  
+    
+
+    public override string ToString(){
+        string result = $"{Date}, {From}, {To}, {Narrative}, {ConvertBalance.SafeConvertBalance(Amount)}"; 
+        return result;
+    }
     }
 }
+

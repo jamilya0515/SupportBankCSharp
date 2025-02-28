@@ -1,9 +1,13 @@
 
 using System.Runtime;
+using NLog;
+using NLog.Config;
+using NLog.Targets;
 
 namespace SupportBank {
     public class Transaction
     {
+        private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
         public Transaction(string date, string from, string to, string narrative, string amount) {
             this.Date = date;
             this.From = from;

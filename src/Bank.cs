@@ -1,7 +1,11 @@
+using NLog;
+using NLog.Config;
+using NLog.Targets;
 
 namespace SupportBank {
      public class Bank
     {
+        private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
         public Dictionary<string, PersonAccount> UserAccounts { get; set; } = new Dictionary<string, PersonAccount>();
 
         public void BankAddTransaction(List<Transaction> transactions)
@@ -33,25 +37,40 @@ namespace SupportBank {
     {       
         Console.WriteLine("Please enter name of account:");
         string? userinput = Console.ReadLine();
-        if (string.IsNullOrWhiteSpace(userinput))
-        {
-            throw new ArgumentException("Account name cannot be empty.");
-        }
-
-        if(UserAccounts.ContainsKey(userinput))
-        {
-            PersonAccount person = UserAccounts[userinput];
-            List<Transaction> UserTransactions = person.Transactions;
-
-            foreach (var transaction in UserTransactions)
+        
+        Logger.Debug("ListAccount called with input: {Input}", userinput);
+        
+        try 
+        {   
+            if (string.IsNullOrWhiteSpace(userinput))
             {
-                Console.WriteLine(transaction.ToString());
+                throw new ArgumentException("Account name cannot be empty.");
+            }
+            
+            else if (!UserAccounts.ContainsKey(userinput)) 
+            {
+                throw new ArgumentException($"No account found for {userinput}.");
+            }
+
+            else 
+            {
+                PersonAccount person = UserAccounts[userinput];
+                List<Transaction> UserTransactions = person.Transactions;
+
+                foreach (var transaction in UserTransactions)
+                {
+                    Console.WriteLine(transaction.ToString());
+                }
+                Logger.Info("Data processed successfully.");
             }
         }
-        else
+        catch (ArgumentNullException ex)
         {
-            Console.WriteLine($"No account found for {userinput}.");
+            Logger.Error(ex, "An error occurred in ListAccount."); 
         }
     }    
     }
 }
+
+
+

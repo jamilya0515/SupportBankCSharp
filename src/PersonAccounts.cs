@@ -1,7 +1,11 @@
+using NLog;
+using NLog.Config;
+using NLog.Targets;
 
 namespace SupportBank {
     public class PersonAccount 
     {
+        private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
         public PersonAccount(string name, int initialBalance) {
             this.Name = name;
             this.Balance = initialBalance;
